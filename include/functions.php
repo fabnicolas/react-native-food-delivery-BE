@@ -44,15 +44,14 @@ function echo_json($json_object,$prettify=false){
 }
 
 function rrmdir($dir) { 
-	if (is_dir($dir)) { 
+	if(is_dir($dir)){ 
 	  $objects = scandir($dir); 
-	  foreach ($objects as $object) { 
-		if ($object != "." && $object != "..") { 
-		  if (is_dir($dir."/".$object))
-			rrmdir($dir."/".$object);
-		  else
-			unlink($dir."/".$object); 
-		} 
+	  foreach($objects as $object){ 
+			if($object != "." && $object != ".."){ 
+				$target=$dir."/".$object;
+				if(is_dir($target)) rrmdir($target);
+				else unlink($target); 
+			} 
 	  }
 	  rmdir($dir); 
 	} 

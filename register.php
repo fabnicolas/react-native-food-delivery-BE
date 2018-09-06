@@ -8,41 +8,13 @@ $email = post_parameter('email');
 $password = post_parameter('password');
 
 $error=0; // This flag will be used to determine the right message to send to the client.
+$error_extra=null;
 
-if(!($email!=null && filter_var($email, FILTER_VALIDATE_EMAIL))){
-  // Email is NOT valid
-  $error=1;
-}else if(!($password!=null && strlen($password)>=8)){
-  // Password is NOT valid
-  $error=2;
-}else{
-  // Generate password using a random salt (That will be stored in database)
-  $password_salt = unique_random_string(3);
-  $password_hashed = hash('sha256', $password.$password_salt);
-  
-  try{
-    // Insert user into DB
-    $statement = $db->getPDO()->prepare(
-      "INSERT INTO pizzapp_users (email, password, password_salt) VALUES (:email, :password, :password_salt)"
-    );
+// Use model "user".
+$user = include_once(__DIR__."/models/user.php");
+$user->linkDB($db);
 
-    $db->pdo_multibindParams($statement, array(
-      'email'=>$email,
-      'password'=>$password_hashed,
-      'password_salt'=>$password_salt
-    ));
-    if($statement->execute()){
-      // Insert OK
-      $error=0;
-    }else{
-      // User already existing
-      $error=3;
-    }
-  }catch(PDOException $e){
-    // DB error (And/Or PDOException)
-    echo $e->getMessage();
-  }
-}
+list($error,$error_extra)=$user->register($email, $password);
 
 $output=null;
 
@@ -64,6 +36,10 @@ switch($error){
     http_response_code(401);
     $output=array('status'=>false, 'message'=>'USER_EXISTING');
     break;
+  case -1:
+    http_response_code(400);
+    $output=array('status'=>false, 'message'=>'DB: '.$error_extra);
+    break;
 }
 
-echo_json($output);
+echo var_export($output,true);
