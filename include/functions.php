@@ -39,8 +39,8 @@ function json($json_object){
 	return json_encode($json_object);	
 }
 
-function echo_jsonify($json_object,$prettify=false){
-	echo trim(jsonify($json_object,$prettify), '"');
+function echo_json($json_object,$prettify=false){
+	echo trim(json($json_object,$prettify), '"');
 }
 
 function rrmdir($dir) { 
