@@ -27,6 +27,15 @@ class DB{
         }
     }
 
+    function pdo_interpolateQuery($query, $params) {
+        $keys = array();
+        foreach($params as $key => $value) {
+            if(is_string($key)) $keys[] = '/:'.$key.'/';
+            else $keys[] = '/[?]/';
+        }
+        return preg_replace($keys, $params, $query, 1, $count);
+    }
+
     function __construct($connection_params, $admin_params, $options=null, $connect=true){
         $this->connection_params=$connection_params;
         $this->admin_params=$admin_params;

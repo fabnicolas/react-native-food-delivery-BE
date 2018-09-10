@@ -22,7 +22,7 @@ switch($error){
   default:
   case 0:
     http_response_code(200);
-    $output=array('status'=>true, 'message'=>'OK');
+    $output=array('status'=>true, 'message'=>'REGISTRATION_OK');
     break;
   case 1:
     http_response_code(400);
@@ -38,8 +38,8 @@ switch($error){
     break;
   case -1:
     http_response_code(400);
-    $output=array('status'=>false, 'message'=>'DB: '.$error_extra);
+    $output=array('status'=>false, 'message'=>'DB ERROR: '.$error_extra);
     break;
 }
 
-echo var_export($output,true);
+echo_json($output);
