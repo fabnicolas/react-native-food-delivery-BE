@@ -1,5 +1,5 @@
 <?php
-class UserModel{
+class UserManager{
   var $db,$session;
 
   // Constructor, linkers
@@ -101,6 +101,19 @@ class UserModel{
 
     return array($error, $error_extra);
   }
+
+  function logout(){
+    $this->session->cookie_remove();
+    return true;
+  }
+
+  function isLogged(){
+    return $this->session->isActivated();
+  }
+
+  function getLoggedUserID(){
+    if($this->session->data!=null) return $this->session->data['user_id'];
+  }
 }
 
-return new UserModel();
+return new UserManager();

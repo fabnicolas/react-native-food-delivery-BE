@@ -74,11 +74,11 @@ function unique_random_string($length=16){
 
 function sql_datetime($precision=0){
 	$timestamp_micro = microtime();
-    list($msec, $sec) = explode(' ', $timestamp_micro);
-    $msec = explode(".",$msec);
-    $msec = $msec[1];
-		$msec = substr($msec,0,$precision);
-		$append='';
+  list($msec, $sec) = explode(' ', $timestamp_micro);
+  $msec = explode(".",$msec);
+  $msec = $msec[1];
+	$msec = substr($msec,0,$precision);
+	$append='';
 	if($precision>0) $append=".".$msec;
 	return date("Y-m-d H:i:s".$append);
 }
@@ -95,6 +95,18 @@ function array_equals(array $array1, array $array2){
 		}
 	}
 	return $are_equals;
+}
+
+function set_secure_cookie($name, $content, $expire=0){
+	setcookie($name, $content, $expire, '', isset($_SERVER["HTTPS"]), true);
+}
+
+function get_secure_cookie($name){
+	if(isset($_COOKIE[$name])){
+		return $_COOKIE[$name];
+	}else{
+		return null;
+	}
 }
 
 // Enable errors

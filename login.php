@@ -1,7 +1,5 @@
 <?php
-$config = require(__DIR__."/include/config.php");
-require_once(__DIR__."/include/functions.php");
-$db = include_once(__DIR__."/include/use_db.php");
+include_once(__DIR__.'/bootstrap.php');
 
 // Inputs.
 $email = post_parameter('email');
@@ -9,12 +7,6 @@ $password = post_parameter('password');
 
 $error=0; // This flag will be used to determine the right message to send to the client.
 $error_extra=null;
-
-// Use model "user".
-$user = include_once(__DIR__."/models/user.php");
-$session = include_once(__DIR__."/models/session.php");
-$user->linkDB($db);
-$user->linkSession($session);
 
 list($error,$error_extra)=$user->login($email, $password);
 
@@ -37,4 +29,4 @@ switch($error){
     break;
 }
 
-echo_json($output,true);
+echo_json($output);
