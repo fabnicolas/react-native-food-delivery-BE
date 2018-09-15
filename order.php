@@ -1,39 +1,22 @@
 <?php
-include_once(__DIR__.'/bootstrap.php');
+require_once(__DIR__.'/bootstrap.php');
 
 $json_status=0; // This flag will be used to determine the right message to send to the client.
 $json_extra=null;
 
 $json_status=0;
 $json_extra=null;
-
+require_once(__DIR__."/bootstrap-core.php");
 
 if($session->tryAuthenticate()){
   // Can order
   $product_list=post_parameter('product_list');
   if($product_list!=null){
-    $products=array();
-    $products_id=array();
+    $input = include_once(__DIR__.'/models/input.php');
+    list($products,$products_id) = $input->parseProductList($product_list);
 
-    // Parse product list
-    $product=explode("|", $product_list);
-    for($i=0;$i<count($product);$i++){
-      $product_info=explode(";", $product[$i]);
-      if(!empty($product_info[0]) && !empty($product_info[1])){
-        $id=$product_info[0];
-        array_push($products_id,$id);
-        $products[$id]['quantity']=$product_info[1];
-      }
-    }
-
-    // Assume products and counters are valid
-
-    /*
-      product[0]['product_id'] == 'Misto fritto'
-      product[0]['product_quantity'] == '4'
-    */
     $statement=$db->getPDO()->prepare(
-      "SELECT * FROM pizzapp_products WHERE product_id IN ".($db->pdo_in_composer($products_id))
+      "SELECT product_id, price FROM pizzapp_products WHERE product_id IN ".($db->pdo_in_composer($products_id))
     );
     $statement->execute($products_id);
     $result=$statement->fetchAll();

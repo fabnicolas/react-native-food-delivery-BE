@@ -1,7 +1,5 @@
 <?php
-$config = require(__DIR__."/include/config.php");
-require_once(__DIR__."/include/functions.php");
-$db = include_once(__DIR__."/include/use_db.php");
+require_once(__DIR__."/bootstrap-core.php");
 
 // Inputs.
 $email = post_parameter('email');
@@ -9,10 +7,6 @@ $password = post_parameter('password');
 
 $error=0; // This flag will be used to determine the right message to send to the client.
 $error_extra=null;
-
-// Use model "user".
-$user = include_once(__DIR__."/models/user.php");
-$user->linkDB($db);
 
 list($error,$error_extra)=$user->register($email, $password);
 
