@@ -29,6 +29,7 @@ if($session->tryAuthenticate()){
 
       $statement = $db->getPDO()->prepare("
         SELECT
+          x.bill_id,
           x.user_id,
           y.email,
           x.time,
