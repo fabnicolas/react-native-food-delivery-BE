@@ -5,9 +5,9 @@
 $db = include_once(__DIR__."/include/use_db.php");
 $db->getPDO()->exec("
 CREATE TABLE IF NOT EXISTS pizzapp_bill (
-  bill_id bigint(20) NOT NULL AUTO_INCREMENT,
-  user_id bigint(20) NOT NULL,
-  cost bigint(20) NOT NULL,
+  bill_id bigint NOT NULL AUTO_INCREMENT,
+  user_id bigint NOT NULL,
+  cost bigint NOT NULL,
   time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (bill_id),
   KEY FK_user_id (user_id)
@@ -15,17 +15,17 @@ CREATE TABLE IF NOT EXISTS pizzapp_bill (
 
 
 CREATE TABLE IF NOT EXISTS pizzapp_orders (
-  user_id bigint(21) NOT NULL,
-  product_id bigint(21) NOT NULL,
-  bill_id bigint(20) NOT NULL,
-  quantity bigint(21) NOT NULL,
+  user_id bigint NOT NULL,
+  product_id bigint NOT NULL,
+  bill_id bigint NOT NULL,
+  quantity bigint NOT NULL,
   PRIMARY KEY (user_id,product_id,bill_id),
   KEY pizzapp_orders_ibfk_2 (product_id),
   KEY pizzapp_orders_ibfk_3 (bill_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS pizzapp_products (
-  product_id bigint(21) NOT NULL AUTO_INCREMENT,
+  product_id bigint NOT NULL AUTO_INCREMENT,
   name varchar(255) NOT NULL,
   description varchar(255) NOT NULL,
   price decimal(10,2) NOT NULL,
@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS pizzapp_products (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS pizzapp_sessions (
-  session_id bigint(21) NOT NULL AUTO_INCREMENT,
-  user_id bigint(21) NOT NULL,
+  session_id bigint NOT NULL AUTO_INCREMENT,
+  user_id bigint NOT NULL,
   token varchar(35) NOT NULL,
   email varchar(40) NOT NULL,
   time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS pizzapp_sessions (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=0 ;
 
 CREATE TABLE IF NOT EXISTS pizzapp_users (
-  user_id bigint(21) NOT NULL AUTO_INCREMENT,
+  user_id bigint NOT NULL AUTO_INCREMENT,
   email varchar(40) NOT NULL,
   password varchar(200) NOT NULL,
   PRIMARY KEY (user_id),
