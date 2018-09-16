@@ -4,10 +4,6 @@ require_once(__DIR__.'/bootstrap.php');
 $json_status=0; // This flag will be used to determine the right message to send to the client.
 $json_extra=null;
 
-$json_status=0;
-$json_extra=null;
-require_once(__DIR__."/bootstrap-core.php");
-
 if($session->tryAuthenticate()){
   // Can order
   $product_list=post_parameter('product_list');
@@ -30,16 +26,27 @@ if($session->tryAuthenticate()){
         $product_id = $row['product_id'];
 
         $price = (double)$row['price'];
-        $quantity = (double)$products[$product_id]['quantity'];
+        $quantity = (int)$products[$product_id]['quantity'];
 
-        $cost+=($price*$quantity);
+        $cost+=round($price*$quantity);
 
-        array_push($orders,array($user_id, $product_id, $quantity));
+        array_push($orders,array($user_id, $product_id, null, $quantity));
       }
+
+      $statement=$db->getPDO()->prepare(
+        "INSERT INTO pizzapp_bill (cost) VALUES (?)"
+      );
+      $statement->execute(array($cost));
+      $bill_id=(int)$db->getPDO()->lastInsertId();
+
+      for($i=0;$i<count($orders);$i++){
+        $orders[$i][2]=$bill_id;
+      }
+
       try{
         $statement=$db->getPDO()->prepare(
-          "INSERT INTO pizzapp_orders (user_id, product_id, quantity) VALUES ".
-          ($db->pdo_insertinto_composer($orders, '(?, ?, ?)'))
+          "INSERT INTO pizzapp_orders (user_id, product_id, bill_id, quantity) VALUES ".
+          ($db->pdo_insertinto_composer($orders, '(?, ?, ?, ?)'))
         );
         $statement->execute($db->pdo_insertinto_executeparams($orders));
 
