@@ -84,13 +84,15 @@ class UserManager{
 
         $this->db->pdo_multibindParams($statement, array('email'=>$email));
         if($statement->execute()){
-          $userdata = $statement->fetchAll()[0];
-          $password_db = $userdata['password']; // Password inside database of relative user
+          $userdata = $statement->fetch();
+          if($userdata){
+            $password_db = $userdata['password']; // Password inside database of relative user
 
-          if(password_verify($password, $password_db)){
-            $user_id=$userdata['user_id'];
-            $this->session->activateUser($user_id, $email);
-            $error=0;
+            if(password_verify($password, $password_db)){
+              $user_id=$userdata['user_id'];
+              $this->session->activateUser($user_id, $email);
+              $error=0;
+            }else{$error=5;}
           }else{$error=4;}
         }else{$error=3;}
       }catch(PDOException $e){
@@ -113,6 +115,20 @@ class UserManager{
 
   function getLoggedUserID(){
     if($this->session->data!=null) return $this->session->data['user_id'];
+    else return null;
+  }
+
+  function getUser($user_id,$fields='*'){
+    $data=null;
+    if($user_id!=null){
+      $statement = $this->db->getPDO()->prepare(
+        'SELECT '.$fields.' FROM pizzapp_users WHERE user_id = ? LIMIT 1'
+      );
+      $statement->execute(array($user_id));
+      $result = $statement->fetch(PDO::FETCH_ASSOC);
+      if($result) $data=$result;
+    }
+    return $data;
   }
 }
 

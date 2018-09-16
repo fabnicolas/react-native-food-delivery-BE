@@ -1,7 +1,8 @@
 <?php
 require_once(__DIR__.'/bootstrap.php');
 
-$json_status=0; // This flag will be used to determine the right message to send to the client.
+// Variables to determine JSON data in response.
+$json_status=0;
 $json_extra=null;
 
 if($session->tryAuthenticate()){
