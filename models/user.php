@@ -79,7 +79,7 @@ class UserManager{
     }else{
       try{
         $statement = $this->db->getPDO()->prepare(
-          "SELECT id, password FROM pizzapp_users WHERE email = :email LIMIT 1"
+          "SELECT user_id, password FROM pizzapp_users WHERE email = :email LIMIT 1"
         );
 
         $this->db->pdo_multibindParams($statement, array('email'=>$email));
@@ -88,7 +88,7 @@ class UserManager{
           $password_db = $userdata['password']; // Password inside database of relative user
 
           if(password_verify($password, $password_db)){
-            $user_id=$userdata['id'];
+            $user_id=$userdata['user_id'];
             $this->session->activateUser($user_id, $email);
             $error=0;
           }else{$error=4;}

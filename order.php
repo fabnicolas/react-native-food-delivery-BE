@@ -34,9 +34,9 @@ if($session->tryAuthenticate()){
       }
 
       $statement=$db->getPDO()->prepare(
-        "INSERT INTO pizzapp_bill (cost) VALUES (?)"
+        "INSERT INTO pizzapp_bill (user_id, cost) VALUES (?, ?)"
       );
-      $statement->execute(array($cost));
+      $statement->execute(array($user_id, $cost));
       $bill_id=(int)$db->getPDO()->lastInsertId();
 
       for($i=0;$i<count($orders);$i++){
